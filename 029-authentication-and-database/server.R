@@ -6,6 +6,25 @@ library(lubridate)
 # Load libraries and functions needed to create SQLite databases.
 library(RSQLite)
 
+# Used to be provided by dplyr, we'll hack together on our own now.
+hflights_sqlite <- function(path = NULL) {
+  path <- dplyr:::db_location(path, "hflights.sqlite")
+  
+  if (!file.exists(path)) {
+    message("Caching hflights db at ", path)
+    
+    src <- src_sqlite(path, create = TRUE)
+    copy_to(src, getExportedValue("hflights", "hflights"), "hflights",
+            temporary = FALSE,
+            indexes = list("Dest", c("Year", "Month", "DayofMonth"), "UniqueCarrier")
+    )
+  } else {
+    src <- src_sqlite(path)
+  }
+  
+  src
+}
+
 saveSQLite <- function(data, name){
   path <- dplyr:::db_location(filename=paste0(name, ".sqlite"))
   if (!file.exists(path)) {
