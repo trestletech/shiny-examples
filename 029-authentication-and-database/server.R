@@ -5,7 +5,7 @@ library(lubridate)
 
 # Load libraries and functions needed to create SQLite databases.
 library(RSQLite)
-library(RSQLite.extfuns)
+
 saveSQLite <- function(data, name){
   path <- dplyr:::db_location(filename=paste0(name, ".sqlite"))
   if (!file.exists(path)) {
